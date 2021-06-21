@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using API.Extensions;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace API
 {
@@ -23,7 +24,7 @@ namespace API
       services.AddCors();
       services.AddControllers();
       services.AddIdentityServices(_config);
-      
+
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
