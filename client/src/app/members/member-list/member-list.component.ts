@@ -3,23 +3,23 @@ import { Component, OnInit } from '@angular/core';
 import { Member } from 'src/app/_models/member';
 
 @Component({
-  selector: 'app-member-list',
-  templateUrl: './member-list.component.html',
-  styleUrls: ['./member-list.component.css'],
+    selector: 'app-member-list',
+    templateUrl: './member-list.component.html',
+    styleUrls: ['./member-list.component.css'],
 })
 export class MemberListComponent implements OnInit {
-  members: Member[] = [];
+    members: Member[] = [];
 
-  constructor(private memberService: MembersService) {}
+    constructor(private memberService: MembersService) {}
 
-  ngOnInit(): void {
-    this.loadMembers();
-  }
+    ngOnInit(): void {
+        this.loadMembers();
+    }
 
-  loadMembers() {
-    this.memberService.getMembers().subscribe((members) => {
-      this.members = members;
-      console.log(this.members);
-    });
-  }
+    loadMembers() {
+        this.memberService.getMembers().subscribe((members) => {
+            this.members = members;
+            console.log(this.members);
+        });
+    }
 }

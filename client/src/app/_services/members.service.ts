@@ -5,18 +5,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class MembersService {
-  baseUrl = environment.apiUrl;
+    baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {}
 
-  getMembers(): Observable<Member[]> {
-    return this.http.get<Member[]>(this.baseUrl + 'users');
-  }
+    getMembers(): Observable<Member[]> {
+        return this.http.get<Member[]>(this.baseUrl + 'users');
+    }
 
-  getMember(username: string): Observable<Member> {
-    return this.http.get<Member>(this.baseUrl + 'users/' + username);
-  }
+    getMember(username: string): Observable<Member> {
+        return this.http.get<Member>(this.baseUrl + 'users/' + username);
+    }
 }
