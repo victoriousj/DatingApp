@@ -4,8 +4,8 @@
             <h1>Your profile</h1>
         </div>
         <div class="col-8">
-            <div class="alert alert-info">
-                <p><strong>Information: </strong> you have made some changes.</p>
+            <div class="alert alert-info" *ngIf="editForm.dirty">
+                <strong>Information: </strong> you have made some changes.
             </div>
         </div>
         <div class="col-4">
@@ -34,44 +34,48 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-success btn-block">Save Changes</button>
+                    <button class="btn btn-success btn-block" form="editForm" [disabled]="!editForm.dirty">
+                        Save Changes
+                    </button>
                 </div>
             </div>
         </div>
         <div class="col-8">
             <tabset class="member-tabset">
                 <tab heading="About {{ member.knownAs }}">
-                    <form action="">
+                    <form #editForm="ngForm" (ngSubmit)="updateMember()" id="editForm">
                         <h4>Description</h4>
-                        <textarea name="introduction" rows="6"></textarea>
+                        <textarea
+                            [(ngModel)]="member.introduction"
+                            name="introduction"
+                            rows="6"
+                            class="form-control"
+                        ></textarea>
                         <h4 class="mt-2">Looking for</h4>
-                        <textarea name="lookingFor" rows="6"></textarea>
+                        <textarea
+                            [(ngModel)]="member.lookingFor"
+                            name="lookingFor"
+                            rows="6"
+                            class="form-control"
+                        ></textarea>
                         <h4 class="mt-2">Interests</h4>
-                        <textarea name="interests" rows="6"></textarea>
+                        <textarea
+                            [(ngModel)]="member.interests"
+                            name="interests"
+                            rows="6"
+                            class="form-control"
+                        ></textarea>
                         <h4 class="mt-2">Location Details:</h4>
                         <div class="form-inline">
                             <label for="city">City: </label>
-                            <input type="text" name="city" class="form-control mx-2" />
+                            <input [(ngModel)]="member.city" type="text" name="city" class="form-control mx-2" />
                             <label for="city">Country: </label>
-                            <input type="text" name="country" class="form-control mx-2" />
+                            <input [(ngModel)]="member.country" type="text" name="country" class="form-control mx-2" />
                         </div>
                     </form>
                 </tab>
-                <tab heading="Interests {{ member.knownAs }}">
-                    <h4>Interests</h4>
-                    <p>{{ member.interests }}</p>
-                </tab>
-                <tab heading="Photos {{ member.knownAs }}">
-                    <h4>Photos</h4>
-                    <ngx-gallery
-                        style="display: inline-block; margin-bottom: 20px"
-                        [options]="galleryOptions"
-                        [images]="galleryImages"
-                    ></ngx-gallery>
-                </tab>
-                <tab heading="Messages">
-                    <h4>Messages</h4>
-                    <p>{{ "messages will go here" }}</p>
+                <tab heading="Edit Photos">
+                    <h4>Photo edit will go here.</h4>
                 </tab>
             </tabset>
         </div>
