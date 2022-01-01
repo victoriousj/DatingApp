@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class AccountService {
     baseUrl = environment.apiUrl;
 
-    private currentUserSource = new ReplaySubject<User | undefined>(1);
+    private currentUserSource = new ReplaySubject<User>(1);
     currentUser$ = this.currentUserSource?.asObservable();
 
     constructor(private http: HttpClient) {}
@@ -21,8 +21,7 @@ export class AccountService {
             map((response: any) => {
                 const user = response;
                 if (user) {
-                    localStorage.setItem('user', JSON.stringify(user));
-                    this.currentUserSource?.next(user);
+                    this.setCurrentUser(user as User);
                 }
             })
         );
@@ -33,8 +32,7 @@ export class AccountService {
             map((user) => {
                 console.log('user', user);
                 if (user) {
-                    localStorage.setItem('user', JSON.stringify(user));
-                    this.currentUserSource.next(user as User);
+                    this.setCurrentUser(user as User);
                 }
                 return user;
             })
@@ -42,6 +40,7 @@ export class AccountService {
     }
 
     setCurrentUser(user: User) {
+        localStorage.setItem('user', JSON.stringify(user));
         this.currentUserSource?.next(user);
     }
 

@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class HomeComponent implements OnInit {
     registerMode: boolean = false;
 
-    constructor(private http: HttpClient) {}
+    constructor() {}
 
     ngOnInit(): void {}
 

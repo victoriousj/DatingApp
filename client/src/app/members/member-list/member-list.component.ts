@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
     styleUrls: ['./member-list.component.css'],
 })
 export class MemberListComponent implements OnInit {
-    members$: Observable<Member[]> | undefined;
+    members$: Observable<Member[]>;
 
     constructor(private memberService: MembersService) {}
 
