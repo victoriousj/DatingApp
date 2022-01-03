@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ namespace API.Controllers
 {
     public class UsersController : BaseApiController
     {
-        public IUserRepository _userRepository { get; }
+        private IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
 
@@ -28,9 +29,21 @@ namespace API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            return Ok(await _userRepository.GetMembersAsync());
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+            userParams.CurrentUserName = user.UserName;
+
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = user.Gender.Equals("male") ? "female" : "male";
+            }
+
+            var users = await _userRepository.GetMembersAsync(userParams);
+
+            Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+
+            return Ok(users);
         }
 
         [Authorize]
@@ -117,19 +130,14 @@ namespace API.Controllers
             return BadRequest("Failed to set main photo");
         }
 
-        [HttpDelete("delete-member/{userName}")]
-        public async Task<ActionResult> DeleteMember(string username)
+        [HttpDelete("delete-member")]
+        public async Task<ActionResult> DeleteMember()
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
 
             foreach (var photo in user.Photos)
             {
-                if (photo is null)
-                {
-                    continue;
-                }
-
-                if (photo.PublicId is not null)
+                if (photo is not null && photo.PublicId is not null)
                 {
                     await _photoService.DeletePhotoAsync(photo.PublicId);
                 }

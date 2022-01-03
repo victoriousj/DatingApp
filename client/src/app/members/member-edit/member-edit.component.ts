@@ -53,14 +53,10 @@ export class MemberEditComponent implements OnInit {
         if (this.member === undefined) return;
 
         if (confirm('delete member?')) {
-            console.log('deleted');
-            this.membersService.deleteMember(this.member).subscribe((response) => {
-                debugger;
+            this.membersService.deleteMember().subscribe(() => {
                 this.accountService.logout();
                 this.router.navigateByUrl('/');
             });
-        } else {
-            console.log('not deleted');
         }
     }
 }

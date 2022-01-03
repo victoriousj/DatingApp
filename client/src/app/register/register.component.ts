@@ -1,9 +1,11 @@
+import { UserParams } from './../_models/userParams';
 import { MembersService } from './../_services/members.service';
 import { AccountService } from './../_services/account.service';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, Form, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { User } from '../_models/user';
 
 @Component({
     selector: 'app-register',
@@ -31,7 +33,10 @@ export class RegisterComponent implements OnInit {
     register() {
         this.accountService.register(this.registrationForm.value).subscribe(
             (response) => {
-                this.membersService.getMembers();
+                const user = response as User;
+                const userParams = new UserParams(user);
+
+                this.membersService.getMembers(userParams);
                 this.router.navigateByUrl('/members');
             },
             (error) => {

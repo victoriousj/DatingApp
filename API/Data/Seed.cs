@@ -13,6 +13,8 @@ namespace API.Data
         public static async Task SeedUsers(DataContext context)
         {
             if (await context.Users.AnyAsync()) return;
+            // await context.Database.EnsureDeletedAsync();
+            // await context.Database.EnsureCreatedAsync();
 
             var userData = await System.IO.File.ReadAllTextAsync("Data/UserSeedData.json");
             var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
