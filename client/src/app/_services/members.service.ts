@@ -1,3 +1,4 @@
+import { LikesParams } from './../_models/likeParams';
 import { User } from 'src/app/_models/user';
 import { AccountService } from './account.service';
 import { UserParams } from './../_models/userParams';
@@ -27,7 +28,7 @@ export class MembersService {
         });
     }
 
-    getUserParams() {
+    getUserParams(): UserParams {
         return this.userParams;
     }
 
@@ -91,6 +92,16 @@ export class MembersService {
 
     deletePhoto(photoId: number) {
         return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+    }
+
+    addLike(username: string) {
+        return this.http.post(this.baseUrl + 'likes/' + username, {});
+    }
+
+    getLikes(likesParams: LikesParams) {
+        let params = this.getPaginationHeaders(likesParams.pageNumber, likesParams.pageSize);
+        params = params.append('predicate', likesParams.predicate);
+        return this.getPaginatedResults<Partial<Member[]>>(this.baseUrl + 'likes', params);
     }
 
     private getPaginatedResults<T>(url: string, params: HttpParams) {
