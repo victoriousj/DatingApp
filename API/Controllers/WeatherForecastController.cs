@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
-  public class WeatherForecastController : BaseApiController
+  public class WeatherForecastController : BaseApiController<WeatherForecastController>
   {
     private static readonly string[] Summaries = new[]
     {

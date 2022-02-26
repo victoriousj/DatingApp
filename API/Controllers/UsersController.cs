@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class UsersController : BaseApiController
+    public class UsersController : BaseApiController<UsersController>
     {
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;

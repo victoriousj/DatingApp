@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class LikesController : BaseApiController
+    public class LikesController : BaseApiController<LikesController>
     {
         private readonly ILikesRepository _likesRepository;
         private readonly IUserRepository _userRepository;
@@ -30,7 +30,7 @@ namespace API.Controllers
             var likedUser = await _userRepository.GetUserByUsernameAsync(username);
             var sourceUser = await _likesRepository.GetUserWithLikes(sourceUserId);
 
-            if (likedUser == null)
+            if (likedUser is null)
             {
                 return NotFound();
             }
@@ -42,18 +42,22 @@ namespace API.Controllers
 
             var userLike = await _likesRepository.GetUserLike(sourceUserId, likedUser.Id);
 
-            if (userLike != null)
+            if (userLike is not null)
             {
-                return BadRequest("You already like this user");
+                // return BadRequest("You already like this user");
+                var existingLike = sourceUser.LikedUsers.Single(x => x.SourceUserId == sourceUserId && x.LikedUserId == likedUser.Id);
+                sourceUser.LikedUsers.Remove(existingLike);
             }
-
-            userLike = new UserLike
+            else
             {
-                SourceUserId = sourceUserId,
-                LikedUserId = likedUser.Id
-            };
+                userLike = new UserLike
+                {
+                    SourceUserId = sourceUserId,
+                    LikedUserId = likedUser.Id
+                };
 
-            sourceUser.LikedUsers.Add(userLike);
+                sourceUser.LikedUsers.Add(userLike);
+            }
 
             if (await _userRepository.SaveAllAsync())
             {
