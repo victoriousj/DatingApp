@@ -1,4 +1,4 @@
-<ng-container *ngIf="member">
+<ng-container>
     <div class="row">
         <div class="col-4">
             <div class="card">
@@ -28,24 +28,24 @@
                 <div class="card-footer">
                     <div class="btn-group d-flex">
                         <button class="btn btn-primary">Like</button>
-                        <button class="btn btn-success">Message</button>
+                        <button class="btn btn-success" (click)="selectTab(3)">Message</button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-8">
-            <tabset class="member-tabset">
-                <tab heading="About {{ member.knownAs }}">
+            <tabset class="member-tabset" #memberTabs>
+                <tab heading="About {{ member.knownAs }}" (selectTab)="onTabActivated($event)">
                     <h4>Description</h4>
                     <p>{{ member.introduction }}</p>
                     <h4>Looking for:</h4>
                     <p>{{ member.lookingFor }}</p>
                 </tab>
-                <tab heading="Interests {{ member.knownAs }}">
+                <tab heading="Interests {{ member.knownAs }}" (selectTab)="onTabActivated($event)">
                     <h4>Interests</h4>
                     <p>{{ member.interests }}</p>
                 </tab>
-                <tab heading="Photos {{ member.knownAs }}">
+                <tab heading="Photos {{ member.knownAs }}" (selectTab)="onTabActivated($event)">
                     <h4>Photos</h4>
                     <ngx-gallery
                         style="display: inline-block; margin-bottom: 20px"
@@ -53,9 +53,9 @@
                         [images]="galleryImages"
                     ></ngx-gallery>
                 </tab>
-                <tab heading="Messages">
+                <tab heading="Messages" (selectTab)="onTabActivated($event)">
                     <h4>Messages</h4>
-                    <p>{{ "messages will go here" }}</p>
+                    <app-member-messages [username]="member.username" [messages]="messages"></app-member-messages>
                 </tab>
             </tabset>
         </div>
