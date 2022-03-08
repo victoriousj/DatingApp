@@ -2,7 +2,6 @@ import { MessageService } from './../_services/message.service';
 import { Component, OnInit } from '@angular/core';
 import { Message } from '../_models/message';
 import { Pagination } from '../_models/pagination';
-import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 
 @Component({
     selector: 'app-messages',
@@ -33,11 +32,10 @@ export class MessagesComponent implements OnInit {
     }
 
     deleteMessage(id: number) {
+        const messageIndex = this.messages.findIndex((x) => x?.id === id);
+
         this.messageService.deleteMessage(id).subscribe(() => {
-            this.messages.splice(
-                this.messages.findIndex((x) => x?.id === id),
-                1
-            );
+            this.messages.splice(messageIndex, 1);
         });
     }
 

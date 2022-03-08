@@ -1,8 +1,7 @@
 import { MessageService } from './../../_services/message.service';
-import { MembersService } from './../../_services/members.service';
 import { Member } from 'src/app/_models/member';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { Message } from 'src/app/_models/message';
@@ -14,11 +13,11 @@ import { Message } from 'src/app/_models/message';
 })
 export class MemberDetailComponent implements OnInit {
     @ViewChild('memberTabs', { static: true }) memberTabs: TabsetComponent;
-    member: Member;
     galleryOptions: NgxGalleryOptions[] = [];
     galleryImages: NgxGalleryImage[] = [];
-    activeTab: TabDirective;
     messages: Message[] = [];
+    activeTab: TabDirective;
+    member: Member;
 
     constructor(private route: ActivatedRoute, private messageService: MessageService) {}
 
@@ -59,6 +58,7 @@ export class MemberDetailComponent implements OnInit {
 
     onTabActivated(data: TabDirective) {
         this.activeTab = data;
+
         if (this.activeTab.heading === 'Messages' && this.messages.length === 0) {
             this.loadMessages();
         }
