@@ -16,10 +16,10 @@ import { getPaginatedResults, getPaginationHeaders } from './paginationHelper';
 })
 export class MembersService {
     baseUrl = environment.apiUrl;
-    members: Member[] = [];
     memberCache = new Map();
-    user: User;
     userParams: UserParams;
+    members: Member[] = [];
+    user: User;
 
     constructor(private http: HttpClient, private accountService: AccountService) {
         this.accountService.currentUser$.pipe(take(1)).subscribe((user) => {

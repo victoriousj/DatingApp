@@ -36,7 +36,7 @@ namespace API.Controllers
 
             if (string.IsNullOrEmpty(userParams.Gender))
             {
-                userParams.Gender = user.Gender.Equals("male") ? "female" : "male";
+                userParams.Gender = user.Gender != null && user.Gender.Equals("male") ? "female" : "male";
             }
 
             var users = await _userRepository.GetMembersAsync(userParams);
@@ -46,7 +46,6 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        [Authorize]
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {

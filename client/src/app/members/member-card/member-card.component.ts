@@ -20,4 +20,8 @@ export class MemberCardComponent implements OnInit {
             this.toastr.success('You have liked ' + member.knownAs);
         });
     }
+
+    errorImageLoad() {
+        this.member.photoUrl = './assets/user.png';
+    }
 }

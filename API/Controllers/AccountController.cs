@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -34,8 +33,6 @@ namespace API.Controllers
 
             var user = _mapper.Map<AppUser>(registerDto);
 
-            using var hmac = new HMACSHA512();
-
             user.UserName = registerDto.Username.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -45,10 +42,17 @@ namespace API.Controllers
                 return BadRequest(result.Errors);
             }
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender,
             };
@@ -59,9 +63,12 @@ namespace API.Controllers
         {
             var user = await _userManager.Users
                 .Include(x => x.Photos)
-                .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
+                .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username.ToLower());
 
-            if (user == null) return Unauthorized("Invalid username");
+            if (user == null)
+            {
+                return Unauthorized("Invalid username");
+            }
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, loginDTO.Password, false);
@@ -71,16 +78,14 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
-            var userDto = new UserDto
+            return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
-
-            return userDto;
         }
 
         private async Task<bool> UserExists(string username)
