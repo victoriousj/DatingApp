@@ -37,11 +37,11 @@ namespace API.Data
             {
                 user.UserName = user.UserName.ToLower();
 
-                user.Photos.Add(new Photo()
-                {
-                    Url = $"https://randomuser.me/api/portraits/{(user.Gender == "male" ? "" : "wo")}men/{index++ % 99 + 1}.jpg",
-                    IsMain = true
-                });
+                    user.Photos.Add(new Photo()
+                    {
+                        Url = $"https://randomuser.me/api/portraits/{(user.Gender == "male" ? "" : "wo")}men/{index++ % 99 + 1}.jpg",
+                        IsMain = true
+                    });
 
                 await userManager.CreateAsync(user, "password");
                 await userManager.AddToRoleAsync(user, "Member");
