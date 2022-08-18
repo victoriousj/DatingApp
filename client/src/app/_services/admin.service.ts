@@ -18,4 +18,8 @@ export class AdminService implements OnInit {
     getUsersWithRoles() {
         return this.http.get<Partial<User[]>>(this.baseUrl + 'admin/users-with-roles');
     }
+
+    updateRoles(username: string, roles: string[]) {
+        return this.http.post(this.baseUrl + 'admin/edit-roles/' + username + '?roles=' + roles, { roles });
+    }
 }
