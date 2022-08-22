@@ -16,7 +16,7 @@ public class AdminController : BaseApiController<AdminController>
         this.userManager = userManager;
     }
 
-    // [Authorize(Policy = "RequireAdminRole")]
+    [Authorize(Policy = "RequireAdminRole")]
     [HttpGet("users-with-roles")]
     public async Task<ActionResult> GetUsersWithRoles()
     {

@@ -1,10 +1,12 @@
 import { MessageService } from './../../_services/message.service';
+import { MembersService } from './../../_services/members.service';
 import { Member } from 'src/app/_models/member';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { Message } from 'src/app/_models/message';
+import { PresenceService } from 'src/app/_services/presence.service';
 
 @Component({
     selector: 'app-member-detail',
@@ -19,7 +21,11 @@ export class MemberDetailComponent implements OnInit {
     activeTab: TabDirective;
     member: Member;
 
-    constructor(private route: ActivatedRoute, private messageService: MessageService) {}
+    constructor(
+        private route: ActivatedRoute,
+        public presenceService: PresenceService,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit(): void {
         this.route.data.subscribe((data) => {

@@ -7,59 +7,66 @@ using Microsoft.OpenApi.Models;
 using API.Extensions;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using API.Middleware;
+using API.SignalR;
 
 namespace API
 {
-  public class Startup
-  {
-    private readonly IConfiguration _config;
-    public Startup(IConfiguration config)
+    public class Startup
     {
-      _config = config;
-    }
+        private readonly IConfiguration _config;
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddApplicationServices(_config);
-      services.AddCors();
-      services.AddControllers();
-      services.AddIdentityServices(_config);
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddApplicationServices(_config);
+            services.AddCors();
+            services.AddControllers();
+            services.AddIdentityServices(_config);
+            services.AddSignalR();
 
-      services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(c =>
       {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+          c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
       });
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                // app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
+            }
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithOrigins("https://localhost:4200"));
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<PresenceHub>("hubs/presence");
+                endpoints.MapHub<MessageHub>("hubs/message");
+            });
+        }
     }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        // app.UseDeveloperExceptionPage();
-
-        app.UseSwagger();
-
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-      }
-
-      app.UseMiddleware<ExceptionMiddleware>();
-
-      app.UseHttpsRedirection();
-
-      app.UseRouting();
-
-      app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
-
-      app.UseAuthentication();
-
-      app.UseAuthorization();
-
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllers();
-      });
-    }
-  }
 }
