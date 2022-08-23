@@ -12,17 +12,15 @@ namespace API.SignalR
 {
     public class MessageHub : Hub
     {
-        private readonly IMessageRepository _messageRespository;
+        private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
-        private readonly UserRepository _userRepository;
-        private readonly MessageRepository _messageRepository;
+        private readonly IUserRepository _userRepository;
 
-        public MessageHub(IMessageRepository messageRespository, IMapper mapper, UserRepository userRepository, MessageRepository messageRepository)
+        public MessageHub(IMessageRepository messageRespository, IMapper mapper, IUserRepository userRepository)
         {
-            this._messageRespository = messageRespository;
+            this._messageRepository = messageRespository;
             this._mapper = mapper;
             this._userRepository = userRepository;
-            this._messageRepository = messageRepository;
         }
 
         public override async Task OnConnectedAsync()
@@ -32,9 +30,9 @@ namespace API.SignalR
             var groupName = GetGroupName(Context.User.GetUsername(), otherUser);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
-            var message = await _messageRespository.GetMessagesThread(Context.User.GetUsername(), otherUser);
+            var messages = await _messageRepository.GetMessagesThread(Context.User.GetUsername(), otherUser);
 
-            await Clients.Group(groupName).SendAsync("ReceiveMessageThread", message);
+            await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

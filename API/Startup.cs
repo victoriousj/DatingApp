@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using API.Extensions;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using API.Middleware;
 using API.SignalR;
 
@@ -26,7 +25,7 @@ namespace API
             services.AddCors();
             services.AddControllers();
             services.AddIdentityServices(_config);
-            services.AddSignalR();
+            services.AddSignalR(o => o.EnableDetailedErrors = true);
 
             services.AddSwaggerGen(c =>
       {
