@@ -17,12 +17,17 @@ namespace API.SignalR
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IHubContext<PresenceHub> _presenceHub;
+        private readonly PresenceTracker _presenceTracker;
 
-        public MessageHub(IMessageRepository messageRespository, IMapper mapper, IUserRepository userRepository)
+        public MessageHub(IMessageRepository messageRespository, IMapper mapper, IUserRepository userRepository,
+        IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
         {
             this._messageRepository = messageRespository;
             this._mapper = mapper;
             this._userRepository = userRepository;
+            this._presenceHub = presenceHub;
+            this._presenceTracker = presenceTracker;
         }
 
         public override async Task OnConnectedAsync()
@@ -72,11 +77,35 @@ namespace API.SignalR
             };
 
             var groupName = GetGroupName(sender.UserName, recipient.UserName);
+
             var group = await _messageRepository.GetMessageGroup(groupName);
 
             if (group.Connections.Any(x => x.Username == recipient.UserName))
             {
                 message.DateRead = DateTime.UtcNow;
+            }
+            else
+            {
+                var connections = await _presenceTracker.GetConnectionsForUser(recipient.UserName);
+
+                if (connections != null)
+                {
+                    var messageSender = await _userRepository.GetUserByUsernameAsync(sender.UserName);
+                    var senderPhoto = messageSender.Photos.First(x => x.IsMain);
+
+                    await _presenceHub
+                    .Clients
+                    .Clients(connections)
+                    .SendAsync(
+                        "NewMessageReceived",
+                        new
+                        {
+                            username = sender.UserName,
+                            knownAs = sender.KnownAs,
+                            content = message.Content,
+                            photo = senderPhoto.Url
+                        });
+                }
             }
 
             _messageRepository.AddMessage(message);
@@ -107,6 +136,7 @@ namespace API.SignalR
         private async Task RemoveFromMessageGroup(string connectionId)
         {
             var connection = await _messageRepository.GetConnection(connectionId);
+
             _messageRepository.RemoveConnection(connection);
 
             await _messageRepository.SaveAllAsync();

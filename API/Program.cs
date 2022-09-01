@@ -27,6 +27,11 @@ namespace API
                 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 
                 await Seed.SeedUsers(userManager, roleManager);
+
+                // Remove all 'connections' in case the application closed before the users left the chats.
+                context.Connections.RemoveRange(context.Connections);
+                context.Groups.RemoveRange(context.Groups);
+                context.SaveChanges();
             }
             catch (Exception ex)
             {

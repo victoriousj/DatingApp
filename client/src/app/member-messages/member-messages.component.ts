@@ -1,5 +1,5 @@
 import { NgForm } from '@angular/forms';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Message } from '../_models/message';
 import { MessageService } from '../_services/message.service';
 
@@ -8,10 +8,10 @@ import { MessageService } from '../_services/message.service';
     templateUrl: './member-messages.component.html',
     styleUrls: ['./member-messages.component.css'],
 })
-export class MemberMessagesComponent implements OnInit {
+export class MemberMessagesComponent implements OnInit, AfterViewInit {
+    @ViewChild('content') content: ElementRef;
     @ViewChild('messageForm') messageForm: NgForm;
     @Input() username: string;
-    @Input() messages: Message[];
     messageContent: string;
 
     constructor(public messageService: MessageService) {}
@@ -23,4 +23,15 @@ export class MemberMessagesComponent implements OnInit {
             this.messageForm.reset();
         });
     }
+
+    ngAfterViewInit() {
+        this.scrollToBottom();
+        // this.messages.changes.subscribe(this.scrollToBottom);
+    }
+
+    scrollToBottom = () => {
+        try {
+            this.content.nativeElement.scrollTop = this.content.nativeElement.scrollHeight;
+        } catch (err) {}
+    };
 }

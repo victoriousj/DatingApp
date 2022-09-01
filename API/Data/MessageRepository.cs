@@ -101,7 +101,7 @@ namespace API.Data
             {
                 foreach (var message in unreadMessages)
                 {
-                    message.DateRead = DateTime.Now;
+                    message.DateRead = DateTime.UtcNow;
                 }
                 await _context.SaveChangesAsync();
             }
@@ -117,6 +117,15 @@ namespace API.Data
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task RemoveAllConnections()
+        {
+            var all = from connections in _context.Connections select connections;
+
+            _context.Connections.RemoveRange(all);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

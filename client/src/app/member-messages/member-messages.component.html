@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body">
+    <div class="card-body" #content>
         <div *ngIf="(messageService.messageThread$ | async)?.length! === 0">
             <div>No messages yet... say hi by using the message box below</div>
         </div>
