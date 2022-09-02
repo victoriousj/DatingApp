@@ -17,3 +17,11 @@
 .rounded-circle {
     max-height: 50px;
 }
+
+.message {
+    padding: 4px;
+}
+
+.message:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}

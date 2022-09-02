@@ -21,7 +21,6 @@ export class MessageService {
     constructor(private http: HttpClient) {}
 
     createHubConnection(user: User, otherUsername: string) {
-        console.log(otherUsername);
         this.hubConnection = new HubConnectionBuilder()
             .withUrl(this.hubUrl + 'message?user=' + otherUsername, {
                 accessTokenFactory: () => user.token,
@@ -36,7 +35,6 @@ export class MessageService {
         });
 
         this.hubConnection.on('NewMessage', (message) => {
-            console.log('message: ', message);
             this.messageThread$.pipe(take(1)).subscribe((messages) => {
                 this.messageThreadSource.next([...messages, message]);
             });
@@ -62,7 +60,6 @@ export class MessageService {
     }
 
     async sendMessage(username: string, content: string) {
-        console.log(this.hubConnection.baseUrl);
         return this.hubConnection
             .invoke('SendMessage', { recipientUsername: username, content })
             .catch((err) => console.error(err));

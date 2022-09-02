@@ -4,7 +4,11 @@
             <div>No messages yet... say hi by using the message box below</div>
         </div>
         <ul *ngIf="(messageService.messageThread$ | async)?.length! > 0" class="chat">
-            <li *ngFor="let message of messageService.messageThread$ | async">
+            <li
+                *ngFor="let message of messageService.messageThread$ | async"
+                class="message"
+                [class.unread]="!message.dateRead && message.senderUsername !== username"
+            >
                 <div>
                     <span class="chat-img float-right">
                         <img
@@ -16,7 +20,7 @@
                     <div class="chat-body">
                         <div class="header">
                             <small class="text-muted">
-                                <span class="fa fa-clock-o mr-1">{{ message.messageSent | timeago }}</span>
+                                <span class="fa fa-clock-o mr-1"> {{ message.messageSent | timeago }}</span>
                                 <span
                                     class="text-danger"
                                     *ngIf="!message.dateRead && message.senderUsername !== username"
