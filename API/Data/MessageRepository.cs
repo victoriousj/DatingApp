@@ -127,5 +127,15 @@ namespace API.Data
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Group> GetGroupForConnection(string connectionId)
+        {
+            return await _context
+                .Groups
+                .Include(x => x.Connections)
+                .Where(x => x.Connections
+                    .Any(y => y.ConnectionId == connectionId))
+                .FirstOrDefaultAsync();
+        }
     }
 }

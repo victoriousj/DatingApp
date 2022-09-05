@@ -8,8 +8,9 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { TimeagoModule } from 'ngx-timeago';
+import { TimeagoModule, TimeagoFormatter } from 'ngx-timeago';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import MyTimegoFormatter from '../_helpers/MyTimeagoFormatter';
 
 @NgModule({
     declarations: [],
@@ -23,7 +24,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
         BsDatepickerModule.forRoot(),
         PaginationModule.forRoot(),
         ButtonsModule.forRoot(),
-        TimeagoModule.forRoot(),
+        TimeagoModule.forRoot({ formatter: { provide: TimeagoFormatter, useClass: MyTimegoFormatter } }),
         ModalModule.forRoot(),
     ],
     exports: [

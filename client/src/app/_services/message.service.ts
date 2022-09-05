@@ -1,8 +1,9 @@
+import { Group } from './../_models/group';
 import { take } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { getPaginatedResults, getPaginationHeaders } from './paginationHelper';
 import { Message } from '../_models/message';
 import { environment } from 'src/environments/environment';
@@ -38,6 +39,20 @@ export class MessageService {
             this.messageThread$.pipe(take(1)).subscribe((messages) => {
                 this.messageThreadSource.next([...messages, message]);
             });
+        });
+
+        this.hubConnection.on('UpdatedGroup', (group: Group) => {
+            if (group.connections.some((x) => x.username === otherUsername)) {
+                this.messageThread$.pipe(take(1)).subscribe((messages) => {
+                    messages.forEach((x) => {
+                        if (!x.dateRead) {
+                            x.dateRead = new Date(Date.now());
+                        }
+                    });
+
+                    this.messageThreadSource.next([...messages]);
+                });
+            }
         });
     }
 
