@@ -84,5 +84,13 @@ namespace API.Data
         {
             _context.Users.Remove(user);
         }
+
+        public async Task<string> GetUserGender(string username)
+        {
+            return await _context.Users
+                .Where(p => p.UserName == username)
+                .Select(x => x.Gender)
+                .FirstOrDefaultAsync();
+        }
     }
 }

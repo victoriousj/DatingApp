@@ -15,5 +15,6 @@ namespace API.Interfaces
         Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
         Task<MemberDto> GetMemberAsync(string username);
         void DeleteMember(AppUser user);
+        Task<string> GetUserGender(string username);
     }
 }

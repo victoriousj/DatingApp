@@ -3,7 +3,7 @@ import { User } from './../_models/user';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { JsonPipe } from '@angular/common';
 
@@ -19,25 +19,24 @@ export class AccountService {
     constructor(private http: HttpClient, private presence: PresenceService) {}
 
     login(model: User) {
-        return this.http.post(this.baseUrl + 'account/login', model).pipe(
-            map((response: any) => {
-                const user = response;
+        return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
+            map((user: User) => {
                 if (user) {
-                    this.setCurrentUser(user as User);
+                    this.setCurrentUser(user);
                     this.presence.createHubConnection(user);
                 }
             })
         );
     }
 
-    register(model: any) {
-        return this.http.post(this.baseUrl + 'account/register', model).pipe(
-            map((user) => {
-                console.log('user', user);
+    register(model: any): Observable<User> {
+        return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+            map((user: User) => {
                 if (user) {
                     this.setCurrentUser(user as User);
                     this.presence.createHubConnection(user as User);
                 }
+
                 return user;
             })
         );
