@@ -28,9 +28,9 @@ namespace API
             services.AddSignalR(o => o.EnableDetailedErrors = true);
 
             services.AddSwaggerGen(c =>
-      {
-          c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-      });
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,14 +57,17 @@ namespace API
                 .WithOrigins("https://localhost:4200"));
 
             app.UseAuthentication();
-
             app.UseAuthorization();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<PresenceHub>("hubs/presence");
                 endpoints.MapHub<MessageHub>("hubs/message");
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

@@ -57,6 +57,7 @@ export class MembersService {
         return getPaginatedResults<Member[]>(this.baseUrl + 'users', params, this.http).pipe(
             map((response) => {
                 this.memberCache.set(JSON.stringify(userParams), response);
+
                 return response;
             })
         );
@@ -70,13 +71,15 @@ export class MembersService {
         if (member) {
             return of(member);
         }
+
         return this.http.get<Member>(this.baseUrl + 'users/' + username);
     }
 
     updateMember(member: Member) {
-        return this.http.put(this.baseUrl + 'users', member).pipe(
+        return this.http.put<Member>(this.baseUrl + 'users', member).pipe(
             map(() => {
                 const index = this.members.indexOf(member);
+
                 this.members[index] = member;
             })
         );
