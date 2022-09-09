@@ -35,10 +35,12 @@ namespace API.Extensions
 
                 if (env == "Development")
                 {
+                    Console.WriteLine("Devlopement");
                     connStr = config.GetConnectionString("DefaultConnection");
                 }
                 else
                 {
+                    Console.WriteLine("Production");
                     var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
                     // Parse connection URL to connection string for Npgsql
