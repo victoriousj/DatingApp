@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using API.Data;
 using API.Helpers;
 using API.Interfaces;
@@ -35,12 +36,12 @@ namespace API.Extensions
 
                 if (env == "Development")
                 {
-                    Console.WriteLine("Devlopement");
+                    Console.WriteLine("Environment: Devlopement");
                     connStr = config.GetConnectionString("DefaultConnection");
                 }
                 else
                 {
-                    Console.WriteLine("Production");
+                    Console.WriteLine("Environment: Production");
                     var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
                     // Parse connection URL to connection string for Npgsql
@@ -55,6 +56,12 @@ namespace API.Extensions
                     var pgPort = pgHostPort.Split(":")[1];
 
                     connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;TrustServerCertificate=True";
+                    Console.WriteLine($"Connection String: ${connStr}");
+                }
+
+                foreach (DictionaryEntry e in System.Environment.GetEnvironmentVariables())
+                {
+                    Console.WriteLine(e.Key + ":" + e.Value);
                 }
 
                 options.UseNpgsql(connStr);
