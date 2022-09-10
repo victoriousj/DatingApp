@@ -67,6 +67,9 @@ namespace API.Extensions
                 options.UseNpgsql(connStr);
             });
 
+            Console.WriteLine("Success");
+
+
             return services;
         }
     }
