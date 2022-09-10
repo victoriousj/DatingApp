@@ -1,7 +1,6 @@
 import { take } from 'rxjs/operators';
 import { AccountService } from './../../_services/account.service';
 import { MessageService } from './../../_services/message.service';
-import { MembersService } from './../../_services/members.service';
 import { Member } from 'src/app/_models/member';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';

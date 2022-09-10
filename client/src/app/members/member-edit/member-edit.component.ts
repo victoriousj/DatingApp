@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../_services/confirm.service';
 import { ToastrService } from 'ngx-toastr';
 import { MembersService } from './../../_services/members.service';
 import { AccountService } from './../../_services/account.service';
@@ -26,6 +27,7 @@ export class MemberEditComponent implements OnInit {
     constructor(
         private accountService: AccountService,
         private membersService: MembersService,
+        private confirmService: ConfirmService,
         private toastr: ToastrService,
         private router: Router
     ) {
@@ -52,11 +54,19 @@ export class MemberEditComponent implements OnInit {
     deleteAccount() {
         if (this.member === undefined) return;
 
-        if (confirm('delete member?')) {
-            this.membersService.deleteMember().subscribe(() => {
-                this.accountService.logout();
-                this.router.navigateByUrl('/');
-            });
-        }
+        const confirmOptions = {
+            btnOkText: 'Delete',
+            title: 'Delete Account?',
+            message: 'Are you sure you want to delete this account?',
+        };
+
+        this.confirmService.confirm(confirmOptions).subscribe((result) => {
+            if (result) {
+                this.membersService.deleteMember().subscribe(() => {
+                    this.accountService.logout();
+                    this.router.navigateByUrl('/');
+                });
+            }
+        });
     }
 }
