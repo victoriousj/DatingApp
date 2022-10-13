@@ -1,6 +1,5 @@
 import { PresenceService } from './_services/presence.service';
 import { AccountService } from './_services/account.service';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { User } from './_models/user';
 
@@ -10,10 +9,7 @@ import { User } from './_models/user';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-    title = 'The Dating App';
-    users: any;
-
-    constructor(private http: HttpClient, private accountService: AccountService, private presence: PresenceService) {}
+    constructor(private accountService: AccountService, private presence: PresenceService) {}
 
     ngOnInit(): void {
         this.setCurrentUser();
